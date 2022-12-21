@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
+import com.example.ondealmocar.exception.ValidationException;
 import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.repository.EmployeeRepository;
 
@@ -53,7 +54,10 @@ public class EmployeeService {
 			employee.setId(id);
 			return EmployeeDTO.of(repository.save(employee));
 		} catch (RuntimeException e) {
-			throw new ResourceNotFoundException("(Err. Employee Service: 02) " + e.getMessage());
+			throw new ValidationException("(Err. Employee Service: 02) " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ValidationException("(Err. Employee Service: 04) " + e.getMessage());
 		}
 	}
 

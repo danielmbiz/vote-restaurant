@@ -12,6 +12,13 @@ public class EmployeeDTO {
 	
 	EmployeeDTO() {
 		
+	}	
+	
+	public EmployeeDTO(Long id, String name, String email) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
 	}
 
 	public EmployeeDTO(Employee employee) {
@@ -37,18 +44,18 @@ public class EmployeeDTO {
 		this.name = name;
 	}
 	
-	public static EmployeeDTO of(Employee employee) {
-		var response = new EmployeeDTO();
-		BeanUtils.copyProperties(employee, response);
-		return response;		
-	}
-
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public static EmployeeDTO of(Employee employee) {
+		var response = new EmployeeDTO();
+		BeanUtils.copyProperties(employee, response);
+		return response;		
 	}
 
 }

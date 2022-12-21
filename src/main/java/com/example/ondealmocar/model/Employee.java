@@ -45,7 +45,7 @@ public class Employee {
 		this.email = response.getEmail();
 	}	
 	
-	public Employee(Long id, @NotEmpty String name, String email, VoteItem voteItem) {
+	public Employee(Long id, String name, String email) {
 		super();
 		this.id = id;
 		this.name = name;

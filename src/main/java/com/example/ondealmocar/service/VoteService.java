@@ -78,7 +78,7 @@ public class VoteService {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate dateVote = LocalDate.parse(dateVoteString, formatter);		
 		var dateVoteIni = dateVote.minusDays(dateVote.getDayOfWeek().getValue());
-		var dateVoteEnd = dateVoteIni.plusDays(7);
+		var dateVoteEnd = dateVoteIni.plusDays(6);
 		List<VoteWinWeek> list = repository.findByWinRestaurantWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE).stream()
 				.map(x -> new VoteWinWeek(x))
 				.collect(Collectors.toList());			

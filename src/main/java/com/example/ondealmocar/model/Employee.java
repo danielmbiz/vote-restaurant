@@ -2,7 +2,6 @@ package com.example.ondealmocar.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +31,7 @@ public class Employee {
 	@NotEmpty
 	private String email;
 	
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee")
 	private List<VoteItem> voteItems;
 		
 	public Employee() {

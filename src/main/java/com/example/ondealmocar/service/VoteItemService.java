@@ -69,14 +69,37 @@ public class VoteItemService {
 	}
 
 	public VoteItemResponse save(VoteItemRequest request) {
+		validateVoteInformed(request.getVoteId());
 		var vote = new Vote(voteService.findById(request.getVoteId()));
 		voteClosed(vote.getStatus());
 		voteDay(request.getEmployeeId(), vote.getDateVote());
 		voteWinRestaurantIdWeek(request.getRestaurantId(), vote.getDateVote());
+		validateEmployeeInformed(request.getEmployeeId());
+		validateRestaurantInformed(request.getRestaurantId());
 		var employee = new Employee(employeeService.findById(request.getEmployeeId()));
 		var restaurant = new Restaurant(restaurantService.findById(request.getRestaurantId()));
 		var voteItem = new VoteItemResponse(repository.save(new VoteItem(request, vote, employee, restaurant)));
 		return voteItem;
+	}
+
+	private void validateVoteInformed(Long voteId) {
+		if ((voteId == null) || (voteId == 0)) {
+			throw new ValidationException("Informar o Id do voto é obrigatório");
+		}	
+	}
+
+	private void validateRestaurantInformed(Long restaurantId) {
+		if ((restaurantId == null) || (restaurantId == 0)) {
+			throw new ValidationException("Informar o restaurante é obrigatório");
+		}
+		
+	}
+
+	private void validateEmployeeInformed(Long employeeId) {
+		if ((employeeId == null) || (employeeId == 0)) {
+			throw new ValidationException("Informar o profissional é obrigatório");
+		}
+		
 	}
 
 	private void voteClosed(VoteStatus status) {
@@ -94,7 +117,7 @@ public class VoteItemService {
 
 	private void voteWinRestaurantIdWeek(Long restaurantId, LocalDate dateVote) {
 		var dateVoteIni = dateVote.minusDays(dateVote.getDayOfWeek().getValue());
-		var dateVoteEnd = dateVoteIni.plusDays(7);
+		var dateVoteEnd = dateVoteIni.plusDays(6);
 		List<Vote> list = voteService.findByWinRestaurantIdWeek(restaurantId, dateVoteIni, dateVoteEnd);
 		if (!list.isEmpty()) {
 			throw new ValidationException("Restaurante já foi escolhido na semana!");
@@ -103,13 +126,18 @@ public class VoteItemService {
 
 	public void delete(Long id) {
 		try {
-			repository.deleteById(id);
+			var voteItemResponse = findById(id);
+			var vote = voteService.findById(voteItemResponse.getVote().getId());
+			voteClosed(vote.getStatus());
+			repository.deleteById(id);			
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Voto não encontrada ID: " + id + " (Err. Vote Service: 03)");
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("(Err. Vote Service: 04) " + e.getMessage());
+		} catch (ValidationException e) {
+			throw new ValidationException("Votação encerrada!");
 		} catch (Exception e) {
-			e.getMessage();
+			e.printStackTrace();
 		}
 	}
 }

@@ -21,12 +21,12 @@ public class EmployeeService {
 	private EmployeeRepository repository;
 
 	public EmployeeDTO findById(Long id) {
-		var employee = repository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Profissional não encontrada Id: " + id + " (Err. Employee Service: 01)"));
+		var employee = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+				"Profissional não encontrada Id: " + id + " (Err. Employee Service: 01)"));
 		return new EmployeeDTO(employee);
 
 	}
-	
+
 	public List<EmployeeDTO> findAll() {
 		List<EmployeeDTO> list = repository.findAll().stream().map(x -> new EmployeeDTO(x))
 				.collect(Collectors.toList());
@@ -34,9 +34,17 @@ public class EmployeeService {
 	}
 
 	public EmployeeDTO save(EmployeeDTO request) {
-		var employee = repository.save(Employee.of(request));
-		return EmployeeDTO.of(employee);
-	}	
+		try {
+			var employee = repository.save(Employee.of(request));
+			return EmployeeDTO.of(employee);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("(Err. Employee Service: 05) " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DatabaseException("Erro não definido");
+		}
+
+	}
 
 	public EmployeeDTO update(Long id, EmployeeDTO obj) {
 		try {
@@ -53,7 +61,8 @@ public class EmployeeService {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("Profissional não encontrada ID: " + id + " (Err. Employee Service: 03)");
+			throw new ResourceNotFoundException(
+					"Profissional não encontrada ID: " + id + " (Err. Employee Service: 03)");
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("(Err. Employee Service: 04) " + e.getMessage());
 		} catch (Exception e) {

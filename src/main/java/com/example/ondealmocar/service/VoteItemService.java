@@ -29,18 +29,8 @@ public class VoteItemService {
 
     @Autowired
     private VoteItemRepository repository;
-
-    @Autowired
-    private VoteService voteService;
-
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private RestaurantService restaurantService;
     @Autowired
     private VoteRepository voteRepository;
-
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired

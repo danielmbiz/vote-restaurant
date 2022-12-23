@@ -34,8 +34,15 @@ public class RestaurantService {
 	}
 
 	public RestaurantDTO save(RestaurantDTO request) {
-		var restaurant = repository.save(Restaurant.of(request));
-		return RestaurantDTO.of(restaurant);
+		try {
+			var restaurant = repository.save(Restaurant.of(request));
+			return RestaurantDTO.of(restaurant);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("(Err. Restaurant Service: 05) " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DatabaseException("Erro não definido");
+		}
 	}
 
 	

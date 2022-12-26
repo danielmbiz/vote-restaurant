@@ -1,12 +1,10 @@
 package com.example.ondealmocar.dto;
 
-import java.time.LocalDate;
-
-import org.springframework.beans.BeanUtils;
-
-import com.example.ondealmocar.dto.projection.IVoteWinWeek;
 import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.model.Vote;
+import org.springframework.beans.BeanUtils;
+
+import java.time.LocalDate;
 
 public class VoteWinWeek {
 	
@@ -23,12 +21,6 @@ public class VoteWinWeek {
 		this.restaurantWin = restaurantWin;
 	}
 	
-	public VoteWinWeek(IVoteWinWeek voteWinWeek) {
-		super();
-		this.dateVote = voteWinWeek.getDateVote();
-		this.restaurantWin = voteWinWeek.getRestaurant();
-	}
-
 	public LocalDate getDateVote() {
 		return dateVote;
 	}

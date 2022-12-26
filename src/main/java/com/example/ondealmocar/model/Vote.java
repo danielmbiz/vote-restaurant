@@ -19,7 +19,7 @@ import com.example.ondealmocar.model.enums.VoteStatus;
 @Entity
 @Table
 public class Vote {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

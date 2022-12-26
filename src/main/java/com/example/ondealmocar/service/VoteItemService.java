@@ -3,7 +3,6 @@ package com.example.ondealmocar.service;
 import com.example.ondealmocar.dto.VoteItemRequest;
 import com.example.ondealmocar.dto.VoteItemResponse;
 import com.example.ondealmocar.dto.VoteItemWin;
-import com.example.ondealmocar.dto.projection.IVoteWin;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
 import com.example.ondealmocar.exception.ValidationException;
@@ -46,7 +45,7 @@ public class VoteItemService {
     public VoteItemWin findByWinDay(String dateVoteString, VoteStatus status) {
         try {
             LocalDate dateVote = LocalDate.parse(dateVoteString);
-            List<IVoteWin> list = repository.findByWinDay(dateVote, status);
+            List<VoteItemWin> list = repository.findByWinDay(dateVote, status);
             validateWinDay(list);
             var voteItemWin = new VoteItemWin(list.get(0).getDateVote(), list.get(0).getQuantityVote(),
                     list.get(0).getRestaurant());
@@ -56,7 +55,7 @@ public class VoteItemService {
         }
     }
 
-    private void validateWinDay(List<IVoteWin> list) {
+    private void validateWinDay(List<VoteItemWin> list) {
         if (list.isEmpty()) {
             throw new ValidationException("Não existe ganhador para o dia");
         }
@@ -81,6 +80,8 @@ public class VoteItemService {
             var restaurant = restaurantRepository.findById(request.getRestaurantId()).get();
             var voteItem = new VoteItemResponse(repository.save(new VoteItem(request, vote, employee, restaurant)));
             return voteItem;
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             throw new DatabaseException("Erro não definido");
@@ -140,7 +141,7 @@ public class VoteItemService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("(Err. Vote Service: 04) " + e.getMessage());
         } catch (ValidationException e) {
-            throw new ValidationException("Votação encerrada!");
+            throw new ValidationException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

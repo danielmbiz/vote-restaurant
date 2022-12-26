@@ -1,13 +1,13 @@
 package com.example.ondealmocar.service;
 
 import com.example.ondealmocar.dto.VoteDTO;
-import com.example.ondealmocar.dto.projection.IVoteWin;
+import com.example.ondealmocar.dto.VoteItemWin;
+import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
 import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.model.Vote;
-import com.example.ondealmocar.model.VoteItem;
 import com.example.ondealmocar.model.enums.VoteStatus;
 import com.example.ondealmocar.repository.VoteItemRepository;
 import com.example.ondealmocar.repository.VoteRepository;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class VoteServiceTest {
 
-    public final static LocalDate DATE_VOTE = LocalDate.now();
+    public final static LocalDate DATE_VOTE = LocalDate.parse("2022-12-19");
     public static Vote vote = new Vote(1L, DATE_VOTE, VoteStatus.OPEN, null);
     public final static Vote INVALID_VOTE = new Vote(null, null, null, null);
     public final static Employee EMPLOYEE = new Employee(null, "nome", "email@email");
@@ -97,6 +97,26 @@ public class VoteServiceTest {
     }
 
     @Test
+    public void findByWinWeekVote_WithValidData_ReturnsListVoteDTO() {
+        List<VoteWinWeek> list = new ArrayList<>();
+        list.add(new VoteWinWeek(DATE_VOTE, RESTAURANT));
+        LocalDate dateVote = LocalDate.parse("2022-12-19");
+        var dateVoteIni = DATE_VOTE.minusDays(DATE_VOTE.getDayOfWeek().getValue());
+        var dateVoteEnd = dateVoteIni.plusDays(6);
+
+        when(repository.findByWinWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE)).thenReturn(list);
+        VoteWinWeek dto = new VoteWinWeek(DATE_VOTE, RESTAURANT);
+
+        List<VoteWinWeek> sut = service.findByWinWeek("2022-12-19");
+
+        assertThat(sut).asList().isNotEmpty();
+        assertThat(sut).asList().hasSize(1);
+        assertEquals(VoteWinWeek.class, sut.get(0).getClass());
+        assertEquals(dto.getDateVote(), sut.get(0).getDateVote());
+        assertEquals(dto.getRestaurantWin(), sut.get(0).getRestaurantWin());
+    }
+
+    @Test
     public void createVote_WithValidData_ReturnsVoteDTO() {
         when(repository.save(any())).thenReturn(vote);
         var dto = VoteDTO.of(vote);
@@ -142,25 +162,8 @@ public class VoteServiceTest {
 
     @Test
     public void finishVote_WithValidData_ReturnsVoteDTO() {
-        List<IVoteWin> list = new ArrayList<>();
-        list.add(new IVoteWin() {
-            @Override
-            public LocalDate getDateVote() {
-                LocalDate dateVote = LocalDate.now();
-                return dateVote;
-            }
-
-            @Override
-            public Integer getQuantityVote() {
-                return 1;
-            }
-
-            @Override
-            public Restaurant getRestaurant() {
-                Restaurant restaurant = new Restaurant(null, "nome");
-                return restaurant;
-            }
-        });
+        List<VoteItemWin> list = new ArrayList<>();
+        list.add(new VoteItemWin(DATE_VOTE, 1L, RESTAURANT));
         when(repository.findById(anyLong())).thenReturn(Optional.of(vote));
         when(repository.save(any())).thenReturn(vote);
         when(voteItemRepository.findByWinDay(vote.getDateVote(), VoteStatus.OPEN)).thenReturn(list);

@@ -22,15 +22,15 @@ public class VoteItem {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "vote_id")
+	@JoinColumn(name = "vote_id", nullable = false)
 	private Vote vote;
 	
 	@ManyToOne
-	@JoinColumn(name = "employee_id")
+	@JoinColumn(name = "employee_id", nullable = false)
 	private Employee employee;
 
 	@ManyToOne
-	@JoinColumn(name = "restaurant_id")
+	@JoinColumn(name = "restaurant_id", nullable = false)
 	private Restaurant restaurant;
 
 	public VoteItem() {

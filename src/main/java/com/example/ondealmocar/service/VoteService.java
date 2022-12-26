@@ -1,8 +1,8 @@
 package com.example.ondealmocar.service;
 
 import com.example.ondealmocar.dto.VoteDTO;
+import com.example.ondealmocar.dto.VoteItemWin;
 import com.example.ondealmocar.dto.VoteWinWeek;
-import com.example.ondealmocar.dto.projection.IVoteWin;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
 import com.example.ondealmocar.exception.ValidationException;
@@ -44,6 +44,8 @@ public class VoteService {
             voteDay(request.getDateVote());
             var vote = repository.save(Vote.of(request));
             return VoteDTO.of(vote);
+        } catch (ValidationException e) {
+            throw new ValidationException(e.getMessage());
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("(Err. Vote Service: 05) " + e.getMessage());
         } catch (Exception e) {
@@ -73,7 +75,7 @@ public class VoteService {
         }
     }
 
-    private void validateVotes(List<IVoteWin> voteItem) {
+    private void validateVotes(List<VoteItemWin> voteItem) {
         if (voteItem.size() == 0) {
             throw new ValidationException("Ninguem votou, você não pode finalizar");
         }
@@ -83,14 +85,7 @@ public class VoteService {
         LocalDate dateVote = LocalDate.parse(dateVoteString);
         var dateVoteIni = dateVote.minusDays(dateVote.getDayOfWeek().getValue());
         var dateVoteEnd = dateVoteIni.plusDays(6);
-        List<VoteWinWeek> list = repository.findByWinRestaurantWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE).stream()
-                .map(x -> new VoteWinWeek(x))
-                .collect(Collectors.toList());
-        return list;
-    }
-
-    public List<Vote> findByWinRestaurantIdWeek(Long restaurantId, LocalDate dateVoteIni, LocalDate dateVoteEnd) {
-        List<Vote> list = repository.findByWinRestaurantIdWeek(restaurantId, dateVoteIni, dateVoteEnd);
+        List<VoteWinWeek> list = repository.findByWinWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE);
         return list;
     }
 

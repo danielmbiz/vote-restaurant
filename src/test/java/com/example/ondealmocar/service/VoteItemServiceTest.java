@@ -4,7 +4,6 @@ package com.example.ondealmocar.service;
 import com.example.ondealmocar.dto.VoteItemRequest;
 import com.example.ondealmocar.dto.VoteItemResponse;
 import com.example.ondealmocar.dto.VoteItemWin;
-import com.example.ondealmocar.dto.projection.IVoteWin;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
 import com.example.ondealmocar.exception.ValidationException;
@@ -114,23 +113,8 @@ public class VoteItemServiceTest {
 
     @Test
     public void findByWinDayVoteItem_WithValidData_ReturnsVoteItemWin() {
-        List<IVoteWin> list = new ArrayList<>();
-        list.add(new IVoteWin() {
-            @Override
-            public LocalDate getDateVote() {
-                return DATE_VOTE;
-            }
-
-            @Override
-            public Integer getQuantityVote() {
-                return 1;
-            }
-
-            @Override
-            public Restaurant getRestaurant() {
-                return RESTAURANT;
-            }
-        });
+        List<VoteItemWin> list = new ArrayList<>();
+        list.add(new VoteItemWin(DATE_VOTE, 1L, RESTAURANT));
         when(repository.findByWinDay(DATE_VOTE, VoteStatus.CLOSE)).thenReturn(list);
         var test = new VoteItemWin(list.get(0).getDateVote(), list.get(0).getQuantityVote(), list.get(0).getRestaurant());
 
@@ -174,12 +158,12 @@ public class VoteItemServiceTest {
     }
 
     @Test
-    public void createVoteItem_DataIntegraty_DatabaseException() {
+    public void createVoteItem_DataIntegraty_ValidationException() {
         var dto = new VoteItemRequest(INVALID_VOTE_ITEM.getId(),
                 INVALID_VOTE_ITEM.getVote().getId(),
                 INVALID_VOTE_ITEM.getEmployee().getId(),
                 INVALID_VOTE_ITEM.getRestaurant().getId());
-        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(DatabaseException.class);
+        assertThatThrownBy(() -> service.save(dto)).isInstanceOf(ValidationException.class);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.ondealmocar.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,13 @@ public class VoteItemController {
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<VoteItemResponse> findById(@PathVariable Long id) {
-		VoteItemResponse obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+		Optional<VoteItemResponse> obj = Optional.ofNullable(service.findById(id));
+		if (obj.isPresent()) {
+			return ResponseEntity.ok().body(obj.get());
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@GetMapping(value = "/win/{dateVote}")
@@ -47,10 +53,17 @@ public class VoteItemController {
 
 	@PostMapping
 	public ResponseEntity<VoteItemResponse> save(@RequestBody VoteItemRequest request) {
-		var vote = service.save(request);
-		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/{id}").buildAndExpand(vote.getId())
-				.toUri();
-		return ResponseEntity.created(uri).body(vote);
+		Optional<VoteItemResponse> vote = Optional.ofNullable(service.save(request));
+		if (vote.isPresent()) {
+			URI uri = ServletUriComponentsBuilder
+					.fromCurrentContextPath().path("/{id}")
+					.buildAndExpand(vote.get().getId())
+					.toUri();
+			return ResponseEntity.created(uri).body(vote.get());
+		}
+		else {
+			return ResponseEntity.unprocessableEntity().build();
+		}
 	}
 	
 	@DeleteMapping(value = "/{id}")

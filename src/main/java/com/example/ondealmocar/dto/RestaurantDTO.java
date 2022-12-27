@@ -13,6 +13,11 @@ public class RestaurantDTO {
 		
 	}
 
+	public RestaurantDTO(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
 	public RestaurantDTO(Restaurant restaurant) {
 		super();
 		this.id = restaurant.getId();

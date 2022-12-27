@@ -1,5 +1,6 @@
 package com.example.ondealmocar.controller;
 
+import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.dto.VoteDTO;
 import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.service.VoteService;
@@ -23,8 +24,13 @@ public class VoteController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<VoteDTO> findById(@PathVariable Long id) {
-        VoteDTO obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+        Optional<VoteDTO> obj = Optional.ofNullable(service.findById(id));
+        if (obj.isPresent()) {
+            return ResponseEntity.ok().body(obj.get());
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(value = "/vote/win/week/{dateVoteString}")

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(EmployeeController.class)
 public class EmployeeControllerTest {
 
-    public static EmployeeDTO employeeDTO = new EmployeeDTO(null, "nome", "email@email");
+    public final static EmployeeDTO EMPLOYEE_DTO = new EmployeeDTO(null, "nome", "email@email");
     public final static EmployeeDTO INVALID_EMPLOYEE_DTO = new EmployeeDTO(1L, "", "");
 
     @Autowired
@@ -36,19 +37,19 @@ public class EmployeeControllerTest {
 
     @Test
     public void createEmployee_WithValidData_ReturnsCreated() throws Exception {
-        when(service.save(any())).thenReturn(employeeDTO);
+        when(service.save(any())).thenReturn(EMPLOYEE_DTO);
 
         mvc.perform(post("/employees")
-                        .content(mapper.writeValueAsString(employeeDTO))
+                        .content(mapper.writeValueAsString(EMPLOYEE_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(employeeDTO.getId()))
-                .andExpect(jsonPath("$.name").value(employeeDTO.getName()))
-                .andExpect(jsonPath("$.email").value(employeeDTO.getEmail()));
+                .andExpect(jsonPath("$.id").value(EMPLOYEE_DTO.getId()))
+                .andExpect(jsonPath("$.name").value(EMPLOYEE_DTO.getName()))
+                .andExpect(jsonPath("$.email").value(EMPLOYEE_DTO.getEmail()));
     }
 
     @Test
-    public void createVote_WithInvalidData_ReturnsBadRequest() throws Exception {
+    public void createEmployee_WithInvalidData_ReturnsBadRequest() throws Exception {
         mvc.perform(post("/employees")
                         .content(mapper.writeValueAsString(INVALID_EMPLOYEE_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -57,13 +58,13 @@ public class EmployeeControllerTest {
 
     @Test
     public void getEmployee_ByExistingId_ReturnsEmployee() throws Exception {
-        when(service.findById(1L)).thenReturn(employeeDTO);
+        when(service.findById(1L)).thenReturn(EMPLOYEE_DTO);
 
         mvc.perform(get("/employees/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(employeeDTO.getId()))
-                .andExpect(jsonPath("$.name").value(employeeDTO.getName()))
-                .andExpect(jsonPath("$.email").value(employeeDTO.getEmail()));
+                .andExpect(jsonPath("$.id").value(EMPLOYEE_DTO.getId()))
+                .andExpect(jsonPath("$.name").value(EMPLOYEE_DTO.getName()))
+                .andExpect(jsonPath("$.email").value(EMPLOYEE_DTO.getEmail()));
     }
 
     @Test
@@ -80,8 +81,8 @@ public class EmployeeControllerTest {
 
     @Test
     public void getEmployee_ByFindAll_ReturnsListEmployee() throws Exception {
-        List<EmployeeDTO> list = new ArrayList<EmployeeDTO>();
-        list.add(employeeDTO);
+        List<EmployeeDTO> list = new ArrayList<>();
+        list.add(EMPLOYEE_DTO);
         when(service.findAll()).thenReturn(list);
 
         mvc.perform(get("/employees"))
@@ -93,16 +94,15 @@ public class EmployeeControllerTest {
 
     @Test
     public void updateEmployee_WithValidData_ReturnsOk() throws Exception {
-        when(service.update(1L, employeeDTO)).thenReturn(employeeDTO);
+        when(service.update(anyLong(), any())).thenReturn(EMPLOYEE_DTO);
 
         mvc.perform(put("/employees/1")
-                        .content(mapper.writeValueAsString(employeeDTO))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(EMPLOYEE_DTO))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(employeeDTO.getId()))
-                .andExpect(jsonPath("$.name").value(employeeDTO.getName()))
-                .andExpect(jsonPath("$.email").value(employeeDTO.getEmail()));
+                .andExpect(jsonPath("$.id").value(EMPLOYEE_DTO.getId()))
+                .andExpect(jsonPath("$.name").value(EMPLOYEE_DTO.getName()))
+                .andExpect(jsonPath("$.email").value(EMPLOYEE_DTO.getEmail()));
     }
 
 }

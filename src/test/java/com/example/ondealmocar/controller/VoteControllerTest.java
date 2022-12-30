@@ -1,10 +1,8 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.dto.VoteDTO;
 import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.model.Restaurant;
-import com.example.ondealmocar.model.Vote;
 import com.example.ondealmocar.model.enums.VoteStatus;
 import com.example.ondealmocar.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +30,6 @@ public class VoteControllerTest {
     public final static Restaurant RESTAURANT = new Restaurant(1L, "Restaurante");
     public final static LocalDate DATE_VOTE = LocalDate.parse("2022-12-23");
     public final static VoteDTO VOTE_DTO = new VoteDTO(1L, DATE_VOTE, VoteStatus.OPEN, null);
-    public final static Vote INVALID_VOTE = new Vote(null, null, null, null);
 
     @Autowired
     private MockMvc mvc;
@@ -59,14 +56,6 @@ public class VoteControllerTest {
     }
 
     @Test
-    public void createVote_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/votes")
-                        .content(mapper.writeValueAsString(INVALID_VOTE))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void finishVote_WithValidData_ReturnsOk() throws Exception {
         when(service.finish(any())).thenReturn(VOTE_DTO);
 
@@ -89,12 +78,6 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.dateVote").value(VOTE_DTO.getDateVote().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
                 .andExpect(jsonPath("$.status").value(VOTE_DTO.getStatus().name()))
                 .andExpect(jsonPath("$.restaurantWin").value(VOTE_DTO.getRestaurantWin()));
-    }
-
-    @Test
-    public void getVote_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/votes/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test

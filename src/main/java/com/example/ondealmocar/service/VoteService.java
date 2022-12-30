@@ -35,8 +35,7 @@ public class VoteService {
     }
 
     public List<VoteDTO> findAll() {
-        List<VoteDTO> list = repository.findAll().stream().map(x -> new VoteDTO(x)).collect(Collectors.toList());
-        return list;
+        return repository.findAll().stream().map(VoteDTO::of).collect(Collectors.toList());
     }
 
     public VoteDTO save(VoteDTO request) {
@@ -85,8 +84,7 @@ public class VoteService {
         LocalDate dateVote = LocalDate.parse(dateVoteString);
         var dateVoteIni = dateVote.minusDays(dateVote.getDayOfWeek().getValue());
         var dateVoteEnd = dateVoteIni.plusDays(6);
-        List<VoteWinWeek> list = repository.findByWinWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE);
-        return list;
+        return repository.findByWinWeek(dateVoteIni, dateVoteEnd, VoteStatus.CLOSE);
     }
 
     public void delete(Long id) {
@@ -97,7 +95,7 @@ public class VoteService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("(Err. Vote Service: 04) " + e.getMessage());
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 

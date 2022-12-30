@@ -1,8 +1,6 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.dto.RestaurantDTO;
-import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -50,14 +48,6 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    public void createRestaurant_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/restaurants")
-                        .content(mapper.writeValueAsString(INVALID_RESTAURANT_DTO))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void getRestaurant_ByExistingId_ReturnsRestaurant() throws Exception {
         when(service.findById(1L)).thenReturn(RESTAURANT_DTO);
 
@@ -65,12 +55,6 @@ public class RestaurantControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(RESTAURANT_DTO.getId()))
                 .andExpect(jsonPath("$.name").value(RESTAURANT_DTO.getName()));
-    }
-
-    @Test
-    public void getRestaurant_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/restaurants/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test

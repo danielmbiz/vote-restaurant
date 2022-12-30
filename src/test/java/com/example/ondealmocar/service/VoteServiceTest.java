@@ -5,7 +5,6 @@ import com.example.ondealmocar.dto.VoteItemWin;
 import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
-import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.model.Vote;
 import com.example.ondealmocar.model.enums.VoteStatus;
@@ -40,7 +39,6 @@ public class VoteServiceTest {
     public final static LocalDate DATE_VOTE = LocalDate.parse("2022-12-19");
     public static Vote vote = new Vote(1L, DATE_VOTE, VoteStatus.OPEN, null);
     public final static Vote INVALID_VOTE = new Vote(null, null, null, null);
-    public final static Employee EMPLOYEE = new Employee(null, "nome", "email@email");
     public final static Restaurant RESTAURANT = new Restaurant(null, "nome");
 
     @InjectMocks
@@ -100,7 +98,6 @@ public class VoteServiceTest {
     public void findByWinWeekVote_WithValidData_ReturnsListVoteDTO() {
         List<VoteWinWeek> list = new ArrayList<>();
         list.add(new VoteWinWeek(DATE_VOTE, RESTAURANT));
-        LocalDate dateVote = LocalDate.parse("2022-12-19");
         var dateVoteIni = DATE_VOTE.minusDays(DATE_VOTE.getDayOfWeek().getValue());
         var dateVoteEnd = dateVoteIni.plusDays(6);
 

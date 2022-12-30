@@ -1,5 +1,22 @@
 package com.example.ondealmocar.service;
 
+import com.example.ondealmocar.dto.EmployeeDTO;
+import com.example.ondealmocar.exception.DatabaseException;
+import com.example.ondealmocar.exception.ResourceNotFoundException;
+import com.example.ondealmocar.model.Employee;
+import com.example.ondealmocar.repository.EmployeeRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
@@ -9,25 +26,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.example.ondealmocar.repository.EmployeeRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import com.example.ondealmocar.dto.EmployeeDTO;
-import com.example.ondealmocar.exception.DatabaseException;
-import com.example.ondealmocar.exception.ResourceNotFoundException;
-import com.example.ondealmocar.model.Employee;
-import com.example.ondealmocar.repository.EmployeeRepositoryTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTest {

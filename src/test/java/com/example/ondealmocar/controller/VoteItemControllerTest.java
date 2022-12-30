@@ -1,16 +1,12 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.VoteDTO;
 import com.example.ondealmocar.dto.VoteItemResponse;
 import com.example.ondealmocar.dto.VoteItemWin;
-import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.model.Vote;
-import com.example.ondealmocar.model.VoteItem;
 import com.example.ondealmocar.model.enums.VoteStatus;
 import com.example.ondealmocar.service.VoteItemService;
-import com.example.ondealmocar.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +34,6 @@ public class VoteItemControllerTest {
     public final static Employee EMPLOYEE = new Employee(1L, "nome", "email@email");
     public final static Restaurant RESTAURANT = new Restaurant(1L, "nome");
     public static VoteItemResponse VOTE_ITEM_RESPONSE = new VoteItemResponse(1L, VOTE, EMPLOYEE, RESTAURANT);
-    public final static Vote VOTE_NULL = new Vote();
-    public final static Employee EMPLOYEE_NULL = new Employee();
-    public final static Restaurant RESTAURANT_NULL = new Restaurant();
-    public final static VoteItemResponse INVALID_VOTE_ITEM_RESPONSE = new VoteItemResponse(1L, VOTE_NULL, EMPLOYEE_NULL, RESTAURANT_NULL);
 
     @Autowired
     private MockMvc mvc;
@@ -68,14 +60,6 @@ public class VoteItemControllerTest {
     }
 
     @Test
-    public void createVoteItem_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/votes/vote")
-                        .content(mapper.writeValueAsString(INVALID_VOTE_ITEM_RESPONSE))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void getVoteItem_ByExistingId_ReturnsVoteItem() throws Exception {
         when(service.findById(1L)).thenReturn(VOTE_ITEM_RESPONSE);
 
@@ -85,12 +69,6 @@ public class VoteItemControllerTest {
                 .andExpect(jsonPath("$.vote.id").value(VOTE_ITEM_RESPONSE.getVote().getId()))
                 .andExpect(jsonPath("$.employee.id").value(VOTE_ITEM_RESPONSE.getEmployee().getId()))
                 .andExpect(jsonPath("$.restaurant.id").value(VOTE_ITEM_RESPONSE.getRestaurant().getId()));
-    }
-
-    @Test
-    public void getVoteItem_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/votes/vote/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test

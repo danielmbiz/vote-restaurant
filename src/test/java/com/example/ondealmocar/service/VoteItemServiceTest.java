@@ -147,7 +147,7 @@ public class VoteItemServiceTest {
                 voteItem.getEmployee().getId(),
                 voteItem.getRestaurant().getId());
 
-        VoteItemResponse sut = service.save(dto);
+        var sut = service.save(dto);
 
         assertNotNull(sut);
         assertEquals(VoteItemResponse.class, sut.getClass());

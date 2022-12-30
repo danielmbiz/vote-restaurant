@@ -1,10 +1,8 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.dto.VoteDTO;
 import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.model.Restaurant;
-import com.example.ondealmocar.model.Vote;
 import com.example.ondealmocar.model.enums.VoteStatus;
 import com.example.ondealmocar.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +30,6 @@ public class VoteControllerTest {
     public final static Restaurant RESTAURANT = new Restaurant(1L, "Restaurante");
     public final static LocalDate DATE_VOTE = LocalDate.parse("2022-12-23");
     public final static VoteDTO VOTE_DTO = new VoteDTO(1L, DATE_VOTE, VoteStatus.OPEN, null);
-    public final static Vote INVALID_VOTE = new Vote(null, null, null, null);
 
     @Autowired
     private MockMvc mvc;

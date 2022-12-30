@@ -29,13 +29,13 @@ public class VoteItemController {
 
     @GetMapping(value = "/win/{dateVote}")
     public ResponseEntity<VoteItemWin> findByWinDay(@PathVariable String dateVote) {
-        VoteItemWin obj = service.findByWinDay(dateVote, VoteStatus.CLOSE);
+        var obj = service.findByWinDay(dateVote, VoteStatus.CLOSE);
         return ResponseEntity.ok().body(obj);
     }
 
     @GetMapping
     public ResponseEntity<List<VoteItemResponse>> findAll() {
-        List<VoteItemResponse> list = service.findAll();
+        var list = service.findAll();
         return ResponseEntity.ok().body(list);
     }
 

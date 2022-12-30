@@ -1,8 +1,6 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.dto.RestaurantDTO;
-import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

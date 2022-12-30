@@ -1,16 +1,12 @@
 package com.example.ondealmocar.controller;
 
-import com.example.ondealmocar.dto.VoteDTO;
 import com.example.ondealmocar.dto.VoteItemResponse;
 import com.example.ondealmocar.dto.VoteItemWin;
-import com.example.ondealmocar.dto.VoteWinWeek;
 import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.model.Restaurant;
 import com.example.ondealmocar.model.Vote;
-import com.example.ondealmocar.model.VoteItem;
 import com.example.ondealmocar.model.enums.VoteStatus;
 import com.example.ondealmocar.service.VoteItemService;
-import com.example.ondealmocar.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +34,6 @@ public class VoteItemControllerTest {
     public final static Employee EMPLOYEE = new Employee(1L, "nome", "email@email");
     public final static Restaurant RESTAURANT = new Restaurant(1L, "nome");
     public static VoteItemResponse VOTE_ITEM_RESPONSE = new VoteItemResponse(1L, VOTE, EMPLOYEE, RESTAURANT);
-    public final static Vote VOTE_NULL = new Vote();
-    public final static Employee EMPLOYEE_NULL = new Employee();
-    public final static Restaurant RESTAURANT_NULL = new Restaurant();
-    public final static VoteItemResponse INVALID_VOTE_ITEM_RESPONSE = new VoteItemResponse(1L, VOTE_NULL, EMPLOYEE_NULL, RESTAURANT_NULL);
 
     @Autowired
     private MockMvc mvc;

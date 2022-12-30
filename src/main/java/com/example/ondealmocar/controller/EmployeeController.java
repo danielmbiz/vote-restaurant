@@ -26,20 +26,18 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<List<EmployeeDTO>> findAll() {
-        List<EmployeeDTO> list = service.findAll();
+        var list = service.findAll();
         return ResponseEntity.ok().body(list);
     }
 
     @PostMapping
     public ResponseEntity<EmployeeDTO> save(@RequestBody EmployeeDTO request) {
         var employee = service.save(request);
-
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/{id}")
                 .buildAndExpand(employee.getId())
                 .toUri();
         return ResponseEntity.created(uri).body(employee);
-
     }
 
     @PutMapping(value = "/{id}")
@@ -54,5 +52,4 @@ public class EmployeeController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }

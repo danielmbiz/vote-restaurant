@@ -47,9 +47,9 @@ public class VoteItemService {
             LocalDate dateVote = LocalDate.parse(dateVoteString);
             List<VoteItemWin> list = repository.findByWinDay(dateVote, status);
             validateWinDay(list);
-            var voteItemWin = new VoteItemWin(list.get(0).getDateVote(), list.get(0).getQuantityVote(),
+            return new VoteItemWin(list.get(0).getDateVote(),
+                    list.get(0).getQuantityVote(),
                     list.get(0).getRestaurant());
-            return voteItemWin;
         } catch (DateTimeParseException e) {
             throw new ValidationException("Data mal formatada");
         }
@@ -62,24 +62,25 @@ public class VoteItemService {
     }
 
     public List<VoteItemResponse> findAll() {
-        List<VoteItemResponse> list = repository.findAll().stream().map(x -> new VoteItemResponse(x))
+        return repository.findAll().stream().map(VoteItemResponse::of)
                 .collect(Collectors.toList());
-        return list;
     }
 
     public VoteItemResponse save(VoteItemRequest request) {
         try {
             validateVoteInformed(request.getVoteId());
-            var vote = voteRepository.findById(request.getVoteId()).get();
+            var vote = voteRepository.findById(request.getVoteId()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Voto não encontrada Id: " + request.getVoteId()));
             voteClosed(vote.getStatus());
             voteDay(request.getEmployeeId(), vote.getDateVote());
             voteWinRestaurantIdWeek(request.getRestaurantId(), vote.getDateVote());
             validateEmployeeInformed(request.getEmployeeId());
             validateRestaurantInformed(request.getRestaurantId());
-            var employee = employeeRepository.findById(request.getEmployeeId()).get();
-            var restaurant = restaurantRepository.findById(request.getRestaurantId()).get();
-            var voteItem = new VoteItemResponse(repository.save(new VoteItem(request, vote, employee, restaurant)));
-            return voteItem;
+            var employee = employeeRepository.findById(request.getEmployeeId()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Profissional não encontrado Id: " + request.getEmployeeId()));
+            var restaurant = restaurantRepository.findById(request.getRestaurantId()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Restaurant não encontrada Id: " + request.getVoteId()));
+            return new VoteItemResponse(repository.save(new VoteItem(request, vote, employee, restaurant)));
         } catch (ValidationException e) {
             throw new ValidationException(e.getMessage());
         } catch (Exception e) {
@@ -133,7 +134,8 @@ public class VoteItemService {
     public void delete(Long id) {
         try {
             var voteItemResponse = findById(id);
-            var vote = voteRepository.findById(voteItemResponse.getVote().getId()).get();
+            var vote = voteRepository.findById(voteItemResponse.getVote().getId()).orElseThrow(() -> new ResourceNotFoundException(
+                    "Voto não encontrado Id: " + voteItemResponse.getVote().getId()));
             voteClosed(vote.getStatus());
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

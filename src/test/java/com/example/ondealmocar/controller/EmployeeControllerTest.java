@@ -49,14 +49,6 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void createEmployee_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/employees")
-                        .content(mapper.writeValueAsString(INVALID_EMPLOYEE_DTO))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void getEmployee_ByExistingId_ReturnsEmployee() throws Exception {
         when(service.findById(1L)).thenReturn(EMPLOYEE_DTO);
 
@@ -65,12 +57,6 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.id").value(EMPLOYEE_DTO.getId()))
                 .andExpect(jsonPath("$.name").value(EMPLOYEE_DTO.getName()))
                 .andExpect(jsonPath("$.email").value(EMPLOYEE_DTO.getEmail()));
-    }
-
-    @Test
-    public void getEmployee_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/employees/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test

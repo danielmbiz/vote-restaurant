@@ -1,20 +1,18 @@
 package com.example.ondealmocar.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Service;
-
 import com.example.ondealmocar.dto.EmployeeDTO;
 import com.example.ondealmocar.exception.DatabaseException;
 import com.example.ondealmocar.exception.ResourceNotFoundException;
 import com.example.ondealmocar.exception.ValidationException;
 import com.example.ondealmocar.model.Employee;
 import com.example.ondealmocar.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -29,9 +27,8 @@ public class EmployeeService {
     }
 
     public List<EmployeeDTO> findAll() {
-        List<EmployeeDTO> list = repository.findAll().stream().map(x -> new EmployeeDTO(x))
+        return repository.findAll().stream().map(EmployeeDTO::of)
                 .collect(Collectors.toList());
-        return list;
     }
 
     public EmployeeDTO save(EmployeeDTO request) {
@@ -69,7 +66,7 @@ public class EmployeeService {
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("(Err. Employee Service: 04) " + e.getMessage());
         } catch (Exception e) {
-            e.getMessage();
+            e.printStackTrace();
         }
     }
 

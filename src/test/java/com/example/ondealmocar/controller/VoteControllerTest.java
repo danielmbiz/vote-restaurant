@@ -59,14 +59,6 @@ public class VoteControllerTest {
     }
 
     @Test
-    public void createVote_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/votes")
-                        .content(mapper.writeValueAsString(INVALID_VOTE))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void finishVote_WithValidData_ReturnsOk() throws Exception {
         when(service.finish(any())).thenReturn(VOTE_DTO);
 
@@ -89,12 +81,6 @@ public class VoteControllerTest {
                 .andExpect(jsonPath("$.dateVote").value(VOTE_DTO.getDateVote().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
                 .andExpect(jsonPath("$.status").value(VOTE_DTO.getStatus().name()))
                 .andExpect(jsonPath("$.restaurantWin").value(VOTE_DTO.getRestaurantWin()));
-    }
-
-    @Test
-    public void getVote_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/votes/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test

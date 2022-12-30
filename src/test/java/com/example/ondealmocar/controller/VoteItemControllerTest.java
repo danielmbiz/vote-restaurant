@@ -68,14 +68,6 @@ public class VoteItemControllerTest {
     }
 
     @Test
-    public void createVoteItem_WithInvalidData_ReturnsBadRequest() throws Exception {
-        mvc.perform(post("/votes/vote")
-                        .content(mapper.writeValueAsString(INVALID_VOTE_ITEM_RESPONSE))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     public void getVoteItem_ByExistingId_ReturnsVoteItem() throws Exception {
         when(service.findById(1L)).thenReturn(VOTE_ITEM_RESPONSE);
 
@@ -85,12 +77,6 @@ public class VoteItemControllerTest {
                 .andExpect(jsonPath("$.vote.id").value(VOTE_ITEM_RESPONSE.getVote().getId()))
                 .andExpect(jsonPath("$.employee.id").value(VOTE_ITEM_RESPONSE.getEmployee().getId()))
                 .andExpect(jsonPath("$.restaurant.id").value(VOTE_ITEM_RESPONSE.getRestaurant().getId()));
-    }
-
-    @Test
-    public void getVoteItem_ByUnexistingId_ReturnsNotFound() throws Exception {
-        mvc.perform(get("/votes/vote/999"))
-                .andExpect(status().isNotFound());
     }
 
     @Test
